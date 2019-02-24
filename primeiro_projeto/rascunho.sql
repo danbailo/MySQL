@@ -4,6 +4,18 @@ CAMPOS = ATRIBUTOS
 */
 /*Structured Query Language, ou Linguagem de Consulta Estruturada*/
 
+/*
+
+1 caracter = 1 byte
+
+char - estatico -> char(10) = 10bytes
+varchar - variante, dinamico -> varchar(10) = joao = 4bytes
+
+char - n gasta tempo variando, usar quando ter certeza do tamanhado da string
+varchar - usar quando nao ter certeza da qtd de caracteres q pode ser inserido, um uso generico
+
+ */
+
 -- CLIENTE
 
 -- NOME - CARACTER(30)

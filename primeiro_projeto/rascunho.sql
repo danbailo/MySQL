@@ -261,3 +261,19 @@ PARA OU - MAIOR PORCENTAGEM NA FRENTE
 PARA E - MENOR PORCENTAGEM NA FRENTE
 
 */
+
+/* FILTRANDO VALORES NULOS - vale p qqr banco */
+
+SELECT NOME, SEXO, ENDERECO
+FROM CLIENTE
+WHERE EMAIL = NULL; #isso esta errado, pois null eu nao sei o q, logo eu n posso igualar algo a null
+#aqui ira retornar empty set;
+
+SELECT NOME, SEXO, ENDERECO
+FROM CLIENTE
+WHERE EMAIL IS NULL;
+#aqui retorna a query solicitada!
+
+SELECT NOME, SEXO, ENDERECO
+FROM CLIENTE
+WHERE EMAIL IS NOT NULL; #inverte o valor

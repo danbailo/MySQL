@@ -441,6 +441,19 @@ OU PRIMARY KEY*/
 CHAVE PRIMEIRA PODE SER DE DUAS FORMAS:
 NATURAL - ex: CPF
 ARTIFICIAL - criado para atribuir a um registro do banco, ex: senha da fila de um banco
-
-
  */
+
+/* A19 - CADINALIDADE */
+
+/* QUEM DEFINE A CARDINALIDADE É A REGRA DE NEGOCIOS */
+
+# (X,Y) - x = primeiro algarismo, y = segundo algarismo
+
+/* PRIMEIRO ALGARISMO - OBRIGATORIEDADE 
+0 - NAO OBRIGATORIO
+1 - OBRIGATORIO
+
+SEGUNDO ALGARISMO - CARDINALIDADE
+1 - MAXIMO DE UM
+N - MAIS DE UM
+*/

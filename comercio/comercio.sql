@@ -209,3 +209,307 @@ ON C.IDCLIENTE = E.ID_CLIENTE
 INNER JOIN TELEFONE T
 ON C.IDCLIENTE = T.ID_CLIENTE
 WHERE SEXO = 'M';
+
+/* A23 Queries - SELECAO - PROJECAO E JUNCAO */
+
+/* PARA UMA CAMPANHA DE MARKETING, O SETOR SOLICITOU UM
+RELATÓRIO COM O NOME, EMAIL E TELEFONE CELULAR 
+DOS CLIENTES QUE MORAM NO ESTADO DO RIO DE JANEIRO 
+VOCÊ TERÁ QUE PASSAR A QUERY PARA GERAR O RELATORIO PARA
+O PROGRAMADOR */
+
+SELECT C.NOME, C.EMAIL, T.NUMERO
+FROM CLIENTE C
+INNER JOIN TELEFONE T
+ON C.IDCLIENTE = T.ID_CLIENTE
+INNER JOIN ENDERECO E
+ON C.IDCLIENTE = E.ID_CLIENTE
+WHERE TIPO = 'CEL' AND ESTADO = 'RJ';
+
++---------+----------------+---------+
+| NOME    | EMAIL          | NUMERO  |
++---------+----------------+---------+
+| JOAO    | JOAO@IG.COM    | 9955331 |
+| JOAO    | JOAO@IG.COM    | 5765547 |
+| ANTONIO | NULL           | 5557798 |
+| ANTONIO | NULL           | 8865645 |
+| CELIA   | JOAO@TERRA.COM | 7865644 |
++---------+----------------+---------+
+
+
+/* PARA UMA CAMPANHA DE PRODUTOS DE BELEZA, O COMERCIAL SOLICITOU UM
+RELATÓRIO COM O NOME, EMAIL E TELEFONE CELULAR 
+DAS MULHERES QUE MORAM NO ESTADO DE SÃO PAULO 
+VOCÊ TERÁ QUE PASSAR A QUERY PARA GERAR O RELATORIO PARA
+O PROGRAMADOR */
+
+SELECT C.NOME, C.EMAIL, T.NUMERO
+FROM CLIENTE C
+INNER JOIN TELEFONE T
+ON C.IDCLIENTE = T.ID_CLIENTE
+INNER JOIN ENDERECO E
+ON C.IDCLIENTE = E.ID_CLIENTE
+WHERE SEXO = 'F' AND TIPO = 'CEL' AND ESTADO = 'SP';
+
++------+---------------+---------+
+| NOME | EMAIL         | NUMERO  |
++------+---------------+---------+
+| ANA  | ANA@GLOBO.COM | 5788654 |
++------+---------------+---------+
+
+/* IFNULL */
+
+SELECT C.NOME,
+	   IFNULL(C.EMAIL,'SEM EMAIL'), 
+	   T.NUMERO
+FROM CLIENTE C
+INNER JOIN TELEFONE T
+ON C.IDCLIENTE = T.ID_CLIENTE
+INNER JOIN ENDERECO E
+ON C.IDCLIENTE = E.ID_CLIENTE
+WHERE TIPO = 'CEL' AND ESTADO = 'RJ';
+
++---------+-----------------------------+---------+
+| NOME    | IFNULL(C.EMAIL,'SEM EMAIL') | NUMERO  |
++---------+-----------------------------+---------+
+| JOAO    | JOAO@IG.COM                 | 9955331 |
+| JOAO    | JOAO@IG.COM                 | 5765547 |
+| ANTONIO | SEM EMAIL                   | 5557798 |
+| ANTONIO | SEM EMAIL                   | 8865645 |
+| CELIA   | JOAO@TERRA.COM              | 7865644 |
++---------+-----------------------------+---------+
+
+SELECT C.NOME AS "CLIENTE",
+	   IFNULL(C.EMAIL,'SEM EMAIL') AS "EMAIL", 
+	   T.NUMERO AS "CELULAR"
+FROM CLIENTE C
+INNER JOIN TELEFONE T
+ON C.IDCLIENTE = T.ID_CLIENTE
+INNER JOIN ENDERECO E
+ON C.IDCLIENTE = E.ID_CLIENTE
+WHERE TIPO = 'CEL' AND ESTADO = 'RJ';
+
++---------+----------------+---------+
+| CLIENTE | EMAIL          | CELULAR |
++---------+----------------+---------+
+| JOAO    | JOAO@IG.COM    | 9955331 |
+| JOAO    | JOAO@IG.COM    | 5765547 |
+| ANTONIO | SEM EMAIL      | 5557798 |
+| ANTONIO | SEM EMAIL      | 8865645 |
+| CELIA   | JOAO@TERRA.COM | 7865644 |
++---------+----------------+---------+
+
+/* VIEW OU VISÕES - GERALMENTE É SOLICITADO PELO PROGRAMADOR */
+
+SELECT C.NOME, 
+	   C.SEXO,
+	   IFNULL(C.EMAIL, "SEM EMAIL") AS "EMAIL",
+	   T.TIPO,
+	   T.NUMERO,
+	   E.BAIRRO,
+	   E.CIDADE,
+	   E.ESTADO
+FROM CLIENTE C
+INNER JOIN TELEFONE T
+ON C.IDCLIENTE = T.ID_CLIENTE
+INNER JOIN ENDERECO E
+ON C.IDCLIENTE = E.ID_CLIENTE;
+
+/* CRIANDO A VIEW */
+
+CREATE VIEW RELATORIO AS
+SELECT C.NOME, 
+	   C.SEXO,
+	   IFNULL(C.EMAIL, "SEM EMAIL") AS "EMAIL",
+	   T.TIPO,
+	   T.NUMERO,
+	   E.BAIRRO,
+	   E.CIDADE,
+	   E.ESTADO
+FROM CLIENTE C
+INNER JOIN TELEFONE T
+ON C.IDCLIENTE = T.ID_CLIENTE
+INNER JOIN ENDERECO E
+ON C.IDCLIENTE = E.ID_CLIENTE;
+
+SELECT * FROM RELATORIO;
+#EM TERMOS DE PERFORMANCE, A VIEW É MAIS PESADA DO QUE FAZER A QUERY MANUALMENTE
+
+SELECT * FROM RELATORIO
+WHERE SEXO = 'F';
+
+SELECT * FROM CLIENTE; #CELIA COM EMAIL DO JOAO
+
+UPDATE CLIENTE
+SET EMAIL = 'CELIA@GMAIL.COM'
+WHERE IDCLIENTE = 6; #SELEÇÃO
+
+SHOW TABLES;
++--------------------+
+| Tables_in_COMERCIO |
++--------------------+
+| CLIENTE            |
+| ENDERECO           |
+| RELATORIO          |
+| TELEFONE           |
++--------------------+
+
+/* COMO SABER QUEM É TABELA E QUEM É VIEW? */
+
+/* APAGANDO UMA VIEW */
+
+DROP VIEW RELATORIO;
+
+/* É UMA QUESTÃO DE ORGANIZAÇÃO, LOGO, SEMPRE QUE EU CRIAR UMA VIEW, DEVO INDICAR QUE É UMA
+VIEW PELO SEU NOME, EX: V_RELATORIO */ /* OUTRA FORMA É UTILIZANDO DICIONÁRIO DE DADOS, MAIS A FRENTE */
+
+
+CREATE VIEW V_RELATORIO AS
+SELECT C.NOME, 
+	   C.SEXO,
+	   IFNULL(C.EMAIL, "SEM EMAIL") AS "EMAIL",
+	   T.TIPO,
+	   T.NUMERO,
+	   E.BAIRRO,
+	   E.CIDADE,
+	   E.ESTADO
+FROM CLIENTE C
+INNER JOIN TELEFONE T
+ON C.IDCLIENTE = T.ID_CLIENTE
+INNER JOIN ENDERECO E
+ON C.IDCLIENTE = E.ID_CLIENTE;
+
+DESC V_RELATORIO;
+
+SELECT NOME, CIDADE, SEXO
+FROM V_RELATORIO;
+
++---------+----------------+------+
+| NOME    | CIDADE         | SEXO |
++---------+----------------+------+
+| JOAO    | RIO DE JANEIRO | M    |
+| JOAO    | RIO DE JANEIRO | M    |
+| JOAO    | RIO DE JANEIRO | M    |
+| CARLOS  | B. HORIZONTE   | M    |
+| ANA     | SAO PAULO      | F    |
+| ANA     | SAO PAULO      | F    |
+| CELIA   | NITERÓI        | F    |
+| CELIA   | NITERÓI        | F    |
+| CELIA   | NITERÓI        | F    |
+| ANTONIO | RIO DE JANEIRO | M    |
+| ANTONIO | RIO DE JANEIRO | M    |
+| ANTONIO | RIO DE JANEIRO | M    |
++---------+----------------+------+
+
+/* NAO É POSSIVEL INSERIR NEM DELETAR VALORES NUMA VIEW DE JOIN! */
+
+----
+
+/* TODA QUERY RETORNA UM DATASET (CONJUNTO DE DADOS) */
+/* ORDER BY - ORDERNA O DATASET*/
+
+SELECT NOME, SEXO, CPF, CIDADE
+FROM CLIENTE
+INNER JOIN ENDERECO
+ON IDCLIENTE = ID_CLIENTE;
++---------+------+---------+----------------+
+| NOME    | SEXO | CPF     | CIDADE         |
++---------+------+---------+----------------+
+| JOAO    | M    | 98547-6 | RIO DE JANEIRO |
+| CARLOS  | M    | 86664-7 | B. HORIZONTE   |
+| ANA     | F    | 75658-5 | SAO PAULO      |
+| JORGE   | M    | 88657-5 | B. HORIZONTE   |
+| CLARA   | F    | 99754-7 | B. HORIZONTE   |
+| CELIA   | F    | 77558-5 | NITERÓI        |
+| ANTONIO | M    | 78558-6 | RIO DE JANEIRO |
+| JOAO    | M    | 86695-6 | RIO DE JANEIRO |
++---------+------+---------+----------------+
+
+
+SELECT NOME, SEXO, CPF, CIDADE
+FROM CLIENTE
+INNER JOIN ENDERECO
+ON IDCLIENTE = ID_CLIENTE
+ORDER BY NOME;
++---------+------+---------+----------------+
+| NOME    | SEXO | CPF     | CIDADE         |
++---------+------+---------+----------------+
+| ANA     | F    | 75658-5 | SAO PAULO      |
+| ANTONIO | M    | 78558-6 | RIO DE JANEIRO |
+| CARLOS  | M    | 86664-7 | B. HORIZONTE   |
+| CELIA   | F    | 77558-5 | NITERÓI        |
+| CLARA   | F    | 99754-7 | B. HORIZONTE   |
+| JOAO    | M    | 98547-6 | RIO DE JANEIRO |
+| JOAO    | M    | 86695-6 | RIO DE JANEIRO |
+| JORGE   | M    | 88657-5 | B. HORIZONTE   |
++---------+------+---------+----------------+
+
+SELECT NOME, SEXO, CPF, CIDADE
+FROM CLIENTE
+INNER JOIN ENDERECO
+ON IDCLIENTE = ID_CLIENTE
+ORDER BY NOME, CPF ASC;
++---------+------+---------+----------------+
+| NOME    | SEXO | CPF     | CIDADE         |
++---------+------+---------+----------------+
+| ANA     | F    | 75658-5 | SAO PAULO      |
+| ANTONIO | M    | 78558-6 | RIO DE JANEIRO |
+| CARLOS  | M    | 86664-7 | B. HORIZONTE   |
+| CELIA   | F    | 77558-5 | NITERÓI        |
+| CLARA   | F    | 99754-7 | B. HORIZONTE   |
+| JOAO    | M    | 86695-6 | RIO DE JANEIRO |
+| JOAO    | M    | 98547-6 | RIO DE JANEIRO |
+| JORGE   | M    | 88657-5 | B. HORIZONTE   |
++---------+------+---------+----------------+
+
+#ORDENACAO PELA ORDEM DA COLUNA
+SELECT NOME, SEXO, CPF, CIDADE
+FROM CLIENTE
+INNER JOIN ENDERECO
+ON IDCLIENTE = ID_CLIENTE
+ORDER BY 4;
++---------+------+---------+----------------+
+| NOME    | SEXO | CPF     | CIDADE         |
++---------+------+---------+----------------+
+| CARLOS  | M    | 86664-7 | B. HORIZONTE   |
+| CLARA   | F    | 99754-7 | B. HORIZONTE   |
+| JORGE   | M    | 88657-5 | B. HORIZONTE   |
+| CELIA   | F    | 77558-5 | NITERÓI        |
+| JOAO    | M    | 86695-6 | RIO DE JANEIRO |
+| JOAO    | M    | 98547-6 | RIO DE JANEIRO |
+| ANTONIO | M    | 78558-6 | RIO DE JANEIRO |
+| ANA     | F    | 75658-5 | SAO PAULO      |
++---------+------+---------+----------------+
+
+SELECT NOME, SEXO, CPF, CIDADE
+FROM CLIENTE
+INNER JOIN ENDERECO
+ON IDCLIENTE = ID_CLIENTE
+ORDER BY 2;
+
+/* DELIMITADOR E ESTADO DE SERVIDOR  */
+
+SELECT * FROM V_RELATORIO
+
+SELECT * FROM V_RELATORIO;
+
+SELECT 'DANIEL', "BAILO"; #sempre abrir e fechar as strings
+
+#trocando o delimitador, por default é o ;
+DELIMITER $
+
+SELECT * FROM V_RELATORIO;
+SELECT * FROM V_RELATORIO$
+
+STATUS #mostra o status do banco bem como o delimitador
+
+#nao reconhece por q precisa dar um espaco apos o comando para definir o delimiter
+DELIMITER# 
+#nessa versao do banco, mesmo tendo mais de um espaço ele reconhece
+DELIMITER  #
+
+/* PROCEDURES */
+
+/* SEMPRE */
+
+DELIMITER $

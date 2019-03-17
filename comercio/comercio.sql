@@ -740,3 +740,178 @@ ELA PRECISARIA TRAZER 2 RESULTADOS, PARA BATER COM A LOGICA DO WHERE*/
 
 SELECT NOME,MARCO FROM VENDEDORES;
 SELECT AVG(MARCO) FROM VENDEDORES;
+
+SELECT NOME, MARCO
+FROM VENDEDORES
+WHERE FEVEREIRO < (SELECT AVG(FEVEREIRO) FROM VENDEDORES) AND SEXO ='F';
+
+/* OPERACOES EM LINHAS */
+
+SELECT NOME,
+	   JANEIRO,
+	   FEVEREIRO,
+	   MARCO,
+	   (JANEIRO+FEVEREIRO+MARCO) AS "TOTAL",
+	   TRUNCATE((JANEIRO+FEVEREIRO+MARCO)/3,2) AS "MEDIA"
+	   FROM VENDEDORES;
+
++----------+-----------+-----------+-----------+------------+-----------+
+| NOME     | JANEIRO   | FEVEREIRO | MARCO     | TOTAL      | MEDIA     |
++----------+-----------+-----------+-----------+------------+-----------+
+| CARLOS   |  76234.78 |  88346.87 |   5756.90 |  170338.55 |  56779.51 |
+| MARIA    |   5865.78 |   6768.87 |   4467.90 |   17102.55 |   5700.84 |
+| ANTONIO  |  78769.78 |   6685.87 |   6664.90 |   92120.55 |  30706.85 |
+| CLARA    |   5779.78 | 446886.88 |   8965.90 |  461632.56 | 153877.51 |
+| ANDERSON | 676545.75 |  77544.87 | 578665.88 | 1332756.49 | 444252.16 |
+| IVONE    |  57789.78 |  44774.87 |  68665.90 |  171230.55 |  57076.85 |
+| JOAO     |   4785.78 |  66478.87 |   6887.90 |   78152.55 |  26050.84 |
+| CELIA    |  89667.78 |  57654.87 |   5755.90 |  153078.55 |  51026.18 |
++----------+-----------+-----------+-----------+------------+-----------+
+
+SELECT NOME,
+	   JANEIRO,
+	   FEVEREIRO,
+	   MARCO,
+	   (JANEIRO+FEVEREIRO+MARCO) AS "TOTAL",
+	   (JANEIRO+FEVEREIRO+MARCO)*0.25 AS "DESCONTO",
+	   TRUNCATE((JANEIRO+FEVEREIRO+MARCO)/3,2) AS "MEDIA"
+	   FROM VENDEDORES;
+
++----------+-----------+-----------+-----------+------------+-----------+-----------+
+| NOME     | JANEIRO   | FEVEREIRO | MARCO     | TOTAL      | DESCONTO  | MEDIA     |
++----------+-----------+-----------+-----------+------------+-----------+-----------+
+| CARLOS   |  76234.78 |  88346.87 |   5756.90 |  170338.55 |  42584.64 |  56779.51 |
+| MARIA    |   5865.78 |   6768.87 |   4467.90 |   17102.55 |   4275.64 |   5700.84 |
+| ANTONIO  |  78769.78 |   6685.87 |   6664.90 |   92120.55 |  23030.14 |  30706.85 |
+| CLARA    |   5779.78 | 446886.88 |   8965.90 |  461632.56 | 115408.14 | 153877.51 |
+| ANDERSON | 676545.75 |  77544.87 | 578665.88 | 1332756.49 | 333189.12 | 444252.16 |
+| IVONE    |  57789.78 |  44774.87 |  68665.90 |  171230.55 |  42807.64 |  57076.85 |
+| JOAO     |   4785.78 |  66478.87 |   6887.90 |   78152.55 |  19538.14 |  26050.84 |
+| CELIA    |  89667.78 |  57654.87 |   5755.90 |  153078.55 |  38269.64 |  51026.18 |
++----------+-----------+-----------+-----------+------------+-----------+-----------+
+
+
+/* ALTERANDO TABELAS */
+
+CREATE TABLE TABELA(
+	COLUNA1 VARCHAR(30),
+	COLUNA2 VARCHAR(30),
+	COLUNA3 VARCHAR(30)
+);
+
+CREATE TABLE TABELA(
+	COLUNA1 INT PRIMARY KEY AUTO_INCREMENT #VAI DAR ERRO
+);
+
+-- ADICIONANDO UMA PK --
+ALTER TABLE TABELA
+ADD PRIMARY KEY (COLUNA1);
+
+DESC TABELA;
++---------+-------------+------+-----+---------+-------+
+| Field   | Type        | Null | Key | Default | Extra |
++---------+-------------+------+-----+---------+-------+
+| COLUNA1 | varchar(30) | NO   | PRI | NULL    |       |
+| COLUNA2 | varchar(30) | YES  |     | NULL    |       |
+| COLUNA3 | varchar(30) | YES  |     | NULL    |       |
++---------+-------------+------+-----+---------+-------+
+--DESVANTAGEM
+#NAO CONSIGO COLOCAR AUTO_INCREMENT QUANDO EU CRIO A PRIMARY KEY POR FORA
+
+
+-- ADICIONANDO UMA COLUNA SEM POSIÇÃO; RECEBE A ULTIMA POSIÇÃO --
+ALTER TABLE TABELA
+ADD COLUNA VARCHAR(30);
+
+ALTER TABLE TABELA
+ADD COLUNA100 INT;
+
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| COLUNA1   | varchar(30) | NO   | PRI | NULL    |       |
+| COLUNA2   | varchar(30) | YES  |     | NULL    |       |
+| COLUNA3   | varchar(30) | YES  |     | NULL    |       |
+| COLUNA    | varchar(30) | YES  |     | NULL    |       |
+| COLUNA100 | int(11)     | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+
+-- ADICIONANDO UMA COLUNA COM POSIÇÃO --
+ALTER TABLE TABELA
+ADD COLUMN COLUNA4 VARCHAR(30) NOT NULL UNIQUE
+AFTER COLUNA3;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| COLUNA1   | varchar(30) | NO   | PRI | NULL    |       |
+| COLUNA2   | varchar(30) | YES  |     | NULL    |       |
+| COLUNA3   | varchar(30) | YES  |     | NULL    |       |
+| COLUNA4   | varchar(30) | NO   | UNI | NULL    |       |
+| COLUNA    | varchar(30) | YES  |     | NULL    |       |
+| COLUNA100 | int(11)     | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+
+
+--MODIFICANDO O TIPO DE UM CAMPO --
+ALTER TABLE TABELA
+MODIFY COLUNA2 DATE NOT NULL; #O TIPO DO DADO A SER MODIFICADO, PRECISA SER COMPATÍVEL COM O NOVO TIPO
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| COLUNA1   | varchar(30) | NO   | PRI | NULL    |       |
+| COLUNA2   | date        | NO   |     | NULL    |       |
+| COLUNA3   | varchar(30) | YES  |     | NULL    |       |
+| COLUNA4   | varchar(30) | NO   | UNI | NULL    |       |
+| COLUNA    | varchar(30) | YES  |     | NULL    |       |
+| COLUNA100 | int(11)     | YES  |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+
+
+-- RENOMEANDO O NOME DA TABELA --
+
+ALTER TABLE TABELA 
+RENAME PESSOA;
+
+CREATE TABLE TIME(
+	IDTIME INT PRIMARY KEY AUTO_INCREMENT,
+	TIME VARCHAR(30),
+	ID_PESSOA VARCHAR(30)
+);
+
+--Foreign key
+ALTER TABLE TIME
+ADD FOREIGN KEY(ID_PESSOA)
+REFERENCES PESSOA(COLUNA1);
+
+/* VERIFICAR AS CHAVES/KEYS */
+
+SHOW CREATE TABELA TIME;
+
+/* ORGANIZAÇÃO DE KEYS - UMA KEY É UMA CONSTRAINT(REGRA) */ /* SEM SE PREOCUPAR COM A NORMALIZAÇÃO */
+/* KEY - REGRA DE INTEGRIDADE REFERENCIAL */
+/* EX: 
+PRIMARY KEY - GARANTE QUE O REGISTRO SEJA UNICO E NAO SE REPITA,
+FOREIGN KEY - GARANTE QUE EU NAO TENHA NENHUM REGISTRO EM UMA TABELA, SEM REFERENCIA EM OUTRA */
+
+CREATE TABLE JOGADOR(
+	IDJOGADOR INT PRIMARY KEY AUTO_INCREMENT,
+	NOME VARCHAR(30)
+);
+
+CREATE TABLE TIMES(
+	IDTIME INT PRIMARY KEY AUTO_INCREMENT,
+	NOMETIME VARCHAR(30),
+	ID_JOGADOR INT,
+	FOREIGN KEY(ID_JOGADOR)
+	REFERENCES JOGADOR(IDJOGADOR)
+);
+
+INSERT INTO JOGADOR VALUES(NULL, "GUERREIRO");
+INSERT INTO TIMES VALUES(NULL, "FLAMENGO", 1);
+
+/* 
+UMA BOA PRÁTICA DE CRIAÇÃO DE TABELAS, É ADICIONAR AS FOREIGN KEY DEPOIS DA TABELA ESTAR CRIADA,
+POIS ASSIM EU POSSO DAR NOME AS CONSTRAINT E ASSIM FICA MELHOR ORGANIZADO NO DICIONARIO DE DADOS,
+1º CRIA AS TABELAS
+2º CRIA AS KEYS OU CONSTRAINTS
+*/
